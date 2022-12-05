@@ -5,41 +5,35 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.SideEffect
-import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import androidx.compose.ui.graphics.Color
 
-private val DarkColorPalette = darkColors(
-  primary = Purple200,
-  primaryVariant = Purple700,
-  secondary = Teal200
+private val LightColors = lightColors(
+  primary = Red700,
+  primaryVariant = Red900,
+  onPrimary = Color.White,
+  secondary = Red700,
+  secondaryVariant = Red900,
+  onSecondary = Color.White,
+  error = Red800
 )
 
-private val LightColorPalette = lightColors(
-  primary = Purple500,
-  primaryVariant = Purple700,
-  secondary = Teal200
+private val DarkColors = darkColors(
+  primary = Red300,
+  primaryVariant = Red700,
+  onPrimary = Color.Black,
+  secondary = Red300,
+  onSecondary = Color.Black,
+  error = Red200
 )
 
 @Composable
 fun ComposerTheme(
   darkTheme: Boolean = isSystemInDarkTheme(),
   content: @Composable () -> Unit) {
-  val colors = if (darkTheme) {
-    DarkColorPalette
-  } else {
-    LightColorPalette
-  }
-
-  val systemUiController = rememberSystemUiController()
-  SideEffect {
-    systemUiController.setStatusBarColor(
-      color = colors.background,
-      darkIcons = !darkTheme
-    )
-  }
-
   MaterialTheme(
-    colors = colors,
+    colors = if (darkTheme) DarkColors else LightColors,
+    typography = ComposerTypography,
+    shapes = ComposerShapes,
     content = content
   )
 }
