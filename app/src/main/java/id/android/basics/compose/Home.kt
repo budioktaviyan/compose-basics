@@ -1,7 +1,6 @@
 package id.android.basics.compose
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -31,10 +30,11 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.heading
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
@@ -54,16 +54,16 @@ fun Home() {
     Scaffold(topBar = { AppBar() }) { innerPadding ->
       LazyColumn(contentPadding = innerPadding) {
         item {
-          Header(text = stringResource(id = R.string.top))
+          Header(text = stringResource(id = string.top))
         }
         item {
           FeaturedPost(
             post = featured,
-            modifier = Modifier.padding(all = 16.dp)
+            modifier = Modifier.padding(16.dp)
           )
         }
         item {
-          Header(text = stringResource(id = R.string.popular))
+          Header(text = stringResource(id = string.popular))
         }
         items(posts) { post ->
           PostItem(post = post)
@@ -81,13 +81,12 @@ fun Header(
   Surface(
     color = MaterialTheme.colors.onSurface.copy(alpha = 0.1f),
     contentColor = MaterialTheme.colors.primary,
-    modifier = modifier) {
+    modifier = modifier.semantics { heading() }) {
     Text(
       text = text,
       style = MaterialTheme.typography.subtitle2,
       modifier = modifier
         .fillMaxWidth()
-        .background(color = Color.LightGray)
         .padding(
           horizontal = 16.dp,
           vertical = 8.dp
@@ -107,7 +106,7 @@ private fun AppBar() {
       )
   },
     title = {
-      Text(text = stringResource(id = R.string.app_title))
+      Text(text = stringResource(id = string.app_title))
   },
     backgroundColor = MaterialTheme.colors.primarySurface
   )
@@ -134,10 +133,12 @@ fun FeaturedPost(
       val padding = Modifier.padding(horizontal = 16.dp)
       Text(
         text = post.title,
+        style = MaterialTheme.typography.h6,
         modifier = padding
       )
       Text(
         text = post.metadata.author.name,
+        style = MaterialTheme.typography.body2,
         modifier = padding
       )
       PostMetadata(
@@ -209,6 +210,7 @@ private fun PostMetadata(
   CompositionLocalProvider(values = arrayOf(LocalContentAlpha provides ContentAlpha.medium)) {
     Text(
       text = text,
+      style = MaterialTheme.typography.body2,
       modifier = modifier
     )
   }
@@ -218,8 +220,8 @@ private fun PostMetadata(
 @Composable
 private fun PostItemPreview() {
   val post = remember { PostRepo.getFeaturedPost() }
-  Surface {
-    ComposerTheme {
+  ComposerTheme {
+    Surface {
       PostItem(post = post)
     }
   }
@@ -229,8 +231,8 @@ private fun PostItemPreview() {
 @Composable
 private fun PostItemDarkPreview() {
   val post = remember { PostRepo.getFeaturedPost() }
-  Surface {
-    ComposerTheme(darkTheme = true) {
+  ComposerTheme(darkTheme = true) {
+    Surface {
       PostItem(post = post)
     }
   }
@@ -257,15 +259,7 @@ private fun FeaturedPostDarkPreview() {
 @Preview("Home")
 @Composable
 private fun HomePreview() {
-  ComposerTheme {
-    Home()
-  }
-}
-
-@Preview("Home • Dark")
-@Composable
-private fun HomeDarkPreview() {
-  ComposerTheme(darkTheme = true) {
+  Surface {
     Home()
   }
 }
