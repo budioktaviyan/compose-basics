@@ -16,6 +16,7 @@
 
 package id.android.basics.compose.plantdetail
 
+import android.content.res.Configuration
 import android.text.method.LinkMovementMethod
 import android.widget.TextView
 import androidx.compose.foundation.layout.Column
@@ -39,6 +40,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.text.HtmlCompat
+import com.google.android.material.composethemeadapter.MdcTheme
 import id.android.basics.compose.R
 import id.android.basics.compose.data.Plant
 import id.android.basics.compose.viewmodels.PlantDetailViewModel
@@ -127,7 +129,7 @@ private fun PlantDescription(description: String) {
 @Preview
 @Composable
 private fun PlantNamePreview() {
-    MaterialTheme {
+    MdcTheme {
         PlantName(name = "Apple")
     }
 }
@@ -135,7 +137,7 @@ private fun PlantNamePreview() {
 @Preview
 @Composable
 private fun PlantWateringPreview() {
-    MaterialTheme {
+    MdcTheme {
         PlantWatering(wateringInterval = 7)
     }
 }
@@ -143,11 +145,12 @@ private fun PlantWateringPreview() {
 @Preview
 @Composable
 private fun PlantDescriptionPreview() {
-    MaterialTheme {
+    MdcTheme {
         PlantDescription(description = "HTML<br><br>description")
     }
 }
 
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
 @Preview
 @Composable
 private fun PlantDetailContentPreview() {
@@ -160,7 +163,7 @@ private fun PlantDetailContentPreview() {
         imageUrl = ""
     )
 
-    MaterialTheme {
+    MdcTheme {
         PlantDetailContent(plant = plant)
     }
 }
