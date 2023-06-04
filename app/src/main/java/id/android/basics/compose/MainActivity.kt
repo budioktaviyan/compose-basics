@@ -29,6 +29,7 @@ import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -54,7 +55,7 @@ class MainActivity : ComponentActivity() {
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
 
-    setContent {}
+    setContent { MyApp() }
   }
 }
 
@@ -237,6 +238,15 @@ private fun MenuBottomNavigation(modifier: Modifier = Modifier) {
   }
 }
 
+@Composable
+private fun MyApp() {
+  ComposerTheme {
+    Scaffold(bottomBar = { MenuBottomNavigation() }) { padding ->
+      HomeScreen(modifier = Modifier.padding(padding))
+    }
+  }
+}
+
 @Preview(
   showBackground = true,
   backgroundColor = 0xFFF0EAE2
@@ -324,4 +334,13 @@ private fun ScreenContentPreview() {
 @Composable
 private fun MenuBottomNavigationPreview() {
   ComposerTheme { MenuBottomNavigation(modifier = Modifier.padding(top = 24.dp)) }
+}
+
+@Preview(
+  widthDp = 360,
+  heightDp = 640
+)
+@Composable
+private fun MyAppPreview() {
+  MyApp()
 }
