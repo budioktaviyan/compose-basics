@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -22,6 +23,7 @@ import id.android.basics.compose.base.ComposerTabBar
 import id.android.basics.compose.base.ComposerTabs
 import id.android.basics.compose.base.ExploreSection
 import id.android.basics.compose.data.ExploreModel
+import kotlinx.coroutines.launch
 
 typealias OnExploreItemClicked = (ExploreModel) -> Unit
 
@@ -42,11 +44,15 @@ fun ComposerHome(
     modifier = Modifier.statusBarsPadding(),
     drawerContent = { ComposerDrawer() }
   ) { padding ->
+    val scope = rememberCoroutineScope()
+
     ComposerHomeContent(
       modifier = modifier.padding(padding),
       onExploreItemClicked = onExploreItemClicked,
       openDrawer = {
-        // TODO Codelab: rememberCoroutineScope step - open the navigation drawer scaffoldState.drawerState.open()
+        scope.launch {
+          scaffoldState.drawerState.open()
+        }
       }
     )
   }
