@@ -90,7 +90,8 @@ fun MainApp() {
         }
         composable(
           route = SingleAccount.routeWithArgs,
-          arguments = SingleAccount.arguments
+          arguments = SingleAccount.arguments,
+          deepLinks = SingleAccount.deepLinks
         ) { navBackStackEntry ->
           // Retrieve the passed argument
           val accountType = navBackStackEntry.arguments?.getString(SingleAccount.accountTypeArg)

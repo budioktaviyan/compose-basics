@@ -8,6 +8,7 @@ import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import androidx.navigation.navDeepLink
 
 // Screens to be displayed in the top ComposerTabRow
 val composerTabRowScreens = listOf(
@@ -52,4 +53,9 @@ object SingleAccount : MainDestination {
 
   val routeWithArgs = "${route}/{${accountTypeArg}}"
   val arguments = listOf(navArgument(accountTypeArg) { type = NavType.StringType })
+  val deepLinks = listOf(
+    navDeepLink {
+      uriPattern = "composer://${SingleAccount.route}/{${SingleAccount.accountTypeArg}}"
+    }
+  )
 }
