@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.navigation.NavController
+import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import id.android.basics.compose.ui.components.ComposerTabRow
 import id.android.basics.compose.ui.theme.ComposerTheme
@@ -31,15 +31,25 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MainApp() {
   ComposerTheme {
-    var currentScreen: MainDestination by remember { mutableStateOf(Overview) }
     val navController = rememberNavController()
+    val currentBackStack by navController.currentBackStackEntryAsState()
+
+    // Fetch your currentDestination
+    val currentDestination = currentBackStack?.destination
+
+    // Change the variable to this and use Overview as a backup screen if this returns null
+    val currentScreen = composerTabRowScreens.find { screen ->
+      screen.route == currentDestination?.route
+    } ?: Overview
 
     Scaffold(
       topBar = {
         ComposerTabRow(
           allScreens = composerTabRowScreens,
-          onTabSelected = { screen ->
-            currentScreen = screen
+          // Pass the callback like this,
+          // defining the navigation action when a tab is selecte
+          onTabSelected = { newScreen ->
+            navController.navigateSingleTopTo(newScreen.route)
           },
           currentScreen = currentScreen
         )
@@ -62,4 +72,12 @@ fun MainApp() {
       }
     }
   }
+}
+
+fun NavController.navigateSingleTopTo(route: String) = this.navigate(route = route) {
+  popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) {
+    saveState = true
+  }
+  launchSingleTop = true
+  restoreState = true
 }
