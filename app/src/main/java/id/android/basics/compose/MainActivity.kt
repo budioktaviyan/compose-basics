@@ -8,7 +8,6 @@ import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
@@ -60,51 +59,55 @@ fun MainApp() {
         )
       }
     ) { innerPadding ->
-      NavHost(
+      ComposerNavHost(
         navController = navController,
-        startDestination = Overview.route,
         modifier = Modifier.padding(innerPadding)
-      ) {
-        composable(route = Overview.route) {
-          OverviewScreen(
-            onClickSeeAllAccounts = {
-              navController.navigateSingleTopTo(Accounts.route)
-            },
-            onClickSeeAllBills = {
-              navController.navigateSingleTopTo(Bills.route)
-          },
-            onAccountClick = { accountType ->
-              navController.navigateToSingleAccount(accountType = accountType)
-            }
-          )
-        }
-        composable(route = Accounts.route) {
-          AccountsScreen(
-            onAccountClick = { accountType ->
-              navController.navigateToSingleAccount(accountType = accountType)
-            }
-          )
-        }
-        composable(route = Bills.route) {
-          BillsScreen()
-        }
-        composable(
-          route = SingleAccount.routeWithArgs,
-          arguments = SingleAccount.arguments,
-          deepLinks = SingleAccount.deepLinks
-        ) { navBackStackEntry ->
-          // Retrieve the passed argument
-          val accountType = navBackStackEntry.arguments?.getString(SingleAccount.accountTypeArg)
-
-          // Pass accountType to SingleAccountScreen
-          SingleAccountScreen(accountType = accountType)
-        }
-      }
+      )
     }
   }
 }
 
-private fun NavController.navigateSingleTopTo(route: String) = this.navigate(route = route) {
+@Composable
+fun ComposerNavHost(
+  navController: NavHostController,
+  modifier: Modifier = Modifier) {
+  NavHost(
+    navController = navController,
+    startDestination = Overview.route,
+    modifier = modifier) {
+    composable(route = Overview.route) {
+      OverviewScreen(
+        onClickSeeAllAccounts = { navController.navigateSingleTopTo(Accounts.route) },
+        onClickSeeAllBills = { navController.navigateSingleTopTo(Bills.route) },
+        onAccountClick = { accountType ->
+          navController.navigateToSingleAccount(accountType = accountType)
+        }
+      )
+    }
+    composable(route = Accounts.route) {
+      AccountsScreen(
+        onAccountClick = { accountType ->
+          navController.navigateToSingleAccount(accountType = accountType)
+        }
+      )
+    }
+    composable(route = Bills.route) {
+      BillsScreen()
+    }
+    composable(
+      route = SingleAccount.routeWithArgs,
+      arguments = SingleAccount.arguments,
+      deepLinks = SingleAccount.deepLinks) { navBackStackEntry ->
+      // Retrieve the passed argument
+      val accountType = navBackStackEntry.arguments?.getString(SingleAccount.accountTypeArg)
+
+      // Pass accountType to SingleAccountScreen
+      SingleAccountScreen(accountType = accountType)
+    }
+  }
+}
+
+private fun NavHostController.navigateSingleTopTo(route: String) = this.navigate(route = route) {
   popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) {
     saveState = true
   }
