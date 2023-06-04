@@ -10,11 +10,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavController
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import id.android.basics.compose.ui.accounts.AccountsScreen
+import id.android.basics.compose.ui.accounts.SingleAccountScreen
 import id.android.basics.compose.ui.bills.BillsScreen
 import id.android.basics.compose.ui.components.ComposerTabRow
 import id.android.basics.compose.ui.overview.OverviewScreen
@@ -70,24 +72,45 @@ fun MainApp() {
             },
             onClickSeeAllBills = {
               navController.navigateSingleTopTo(Bills.route)
+          },
+            onAccountClick = { accountType ->
+              navController.navigateToSingleAccount(accountType = accountType)
             }
           )
         }
         composable(route = Accounts.route) {
-          AccountsScreen()
+          AccountsScreen(
+            onAccountClick = { accountType ->
+              navController.navigateToSingleAccount(accountType = accountType)
+            }
+          )
         }
         composable(route = Bills.route) {
           BillsScreen()
+        }
+        composable(
+          route = SingleAccount.routeWithArgs,
+          arguments = SingleAccount.arguments
+        ) { navBackStackEntry ->
+          // Retrieve the passed argument
+          val accountType = navBackStackEntry.arguments?.getString(SingleAccount.accountTypeArg)
+
+          // Pass accountType to SingleAccountScreen
+          SingleAccountScreen(accountType = accountType)
         }
       }
     }
   }
 }
 
-fun NavController.navigateSingleTopTo(route: String) = this.navigate(route = route) {
+private fun NavController.navigateSingleTopTo(route: String) = this.navigate(route = route) {
   popUpTo(this@navigateSingleTopTo.graph.findStartDestination().id) {
     saveState = true
   }
   launchSingleTop = true
   restoreState = true
+}
+
+private fun NavHostController.navigateToSingleAccount(accountType: String) {
+  this.navigateSingleTopTo("${SingleAccount.route}/$accountType")
 }

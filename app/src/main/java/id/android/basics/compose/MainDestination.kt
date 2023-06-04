@@ -6,6 +6,8 @@ import androidx.compose.material.icons.filled.Money
 import androidx.compose.material.icons.filled.MoneyOff
 import androidx.compose.material.icons.filled.PieChart
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 // Screens to be displayed in the top ComposerTabRow
 val composerTabRowScreens = listOf(
@@ -47,4 +49,7 @@ object SingleAccount : MainDestination {
   override val route = "single_account"
 
   const val accountTypeArg = "account_type"
+
+  val routeWithArgs = "${route}/{${accountTypeArg}}"
+  val arguments = listOf(navArgument(accountTypeArg) { type = NavType.StringType })
 }
