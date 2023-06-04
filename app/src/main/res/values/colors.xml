@@ -1,5 +1,4 @@
 <resources>
-  <color name="colorPrimary">#5D1049</color>
-  <color name="colorPrimaryDark">#3D0A2C</color>
-  <color name="colorAccent">#E30425</color>
+  <color name="statusBarColor">#EFEFEF</color>
+  <color name="backgroundColor">#26282F</color>
 </resources>

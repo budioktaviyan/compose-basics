@@ -1,10 +1,7 @@
 <resources>
-
-  <style name="Theme.Composer" parent="Theme.AppCompat.Light.NoActionBar">
-    <item name="colorPrimary">@color/colorPrimary</item>
-    <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    <item name="colorAccent">@color/colorAccent</item>
-    <item name="android:colorBackground">@color/colorPrimary</item>
-    <item name="android:windowBackground">@color/colorPrimary</item>
+  <style name="Theme.Composer" parent="Theme.MaterialComponents.NoActionBar">
+    <item name="android:statusBarColor">@color/statusBarColor</item>
+    <item name="android:windowLightStatusBar">true</item>
+    <item name="android:windowBackground">?attr/colorSurface</item>
   </style>
 </resources>
