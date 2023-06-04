@@ -18,8 +18,9 @@ class MainActivity : ComponentActivity() {
       ComposerTheme {
         Surface(
           modifier = Modifier.fillMaxSize(),
-          color = MaterialTheme.colors.background
-        ) {}
+          color = MaterialTheme.colors.background) {
+          WellnessScreen()
+        }
       }
     }
   }
