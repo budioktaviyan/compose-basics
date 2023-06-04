@@ -1,9 +1,11 @@
 package id.android.basics.compose
 
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -32,7 +34,9 @@ class MainActivity : ComponentActivity() {
     setContent {
       ComposerTheme {
         // A surface container using the 'background' color from the theme
-        Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colors.background) {
+        Surface(
+          modifier = Modifier.fillMaxSize(),
+          color = MaterialTheme.colors.background) {
           Greeting(
             profile = Profile(
               "Budi Oktaviyan",
@@ -59,17 +63,39 @@ fun Greeting(profile: Profile) {
       modifier = Modifier
         .size(40.dp)
         .clip(CircleShape)
+        .border(1.5.dp, MaterialTheme.colors.secondary, CircleShape)
     )
+
     Spacer(modifier = Modifier.width(8.dp))
+
     Column {
-      Text(text = "Hi ${profile.name}!")
+      Text(
+        text = "Hi ${profile.name}!",
+        color = MaterialTheme.colors.secondaryVariant,
+        style = MaterialTheme.typography.subtitle2
+      )
+
       Spacer(modifier = Modifier.height(4.dp))
-      Text(text = profile.title)
+
+      Surface(
+        shape = MaterialTheme.shapes.medium,
+        elevation = 1.dp) {
+        Text(
+          text = profile.title,
+          modifier = Modifier.padding(all = 4.dp),
+          style = MaterialTheme.typography.body2
+        )
+      }
     }
   }
 }
 
-@Preview(showBackground = true)
+@Preview(name = "Light Mode")
+@Preview(
+  name = "Dark Mode",
+  uiMode = Configuration.UI_MODE_NIGHT_YES,
+  showBackground = true
+)
 @Composable
 fun DefaultPreview() {
   ComposerTheme {
