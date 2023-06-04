@@ -7,6 +7,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.VisibleForTesting
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,6 +19,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
@@ -25,6 +27,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -53,6 +56,12 @@ const val MaxZoom = 20f
 internal const val KEY_ARG_DETAILS_CITY_NAME = "KEY_ARG_DETAILS_CITY_NAME"
 
 private const val InitialZoom = 5f
+
+data class DetailsUiState(
+  val cityDetails: ExploreModel? = null,
+  val isLoading: Boolean = false,
+  val throwError: Boolean = false
+)
 
 @AndroidEntryPoint
 class DetailsActivity : ComponentActivity() {
@@ -98,16 +107,38 @@ fun DetailsScreen(
   onErrorLoading: () -> Unit,
   modifier: Modifier = Modifier,
   viewModel: DetailsViewModel = viewModel()) {
-  // TODO Codelab: produceState step - Show loading screen while fetching city details
-  val cityDetails = remember(viewModel) { viewModel.cityDetails }
+  val uiState by produceState(
+    initialValue = DetailsUiState(isLoading = true)
+  ) {
+    // In a coroutine, this can call suspend functions or move the computation to different Dispatchers
+    val cityDetailsResult = viewModel.cityDetails
+    value = if (cityDetailsResult is Result.Success<ExploreModel>) {
+      DetailsUiState(cityDetailsResult.data)
+    } else {
+      DetailsUiState(throwError = true)
+    }
+  }
 
-  if (cityDetails is Result.Success<ExploreModel>) {
-    DetailsContent(
-      cityDetails.data,
-      modifier.fillMaxSize()
-    )
-  } else {
-    onErrorLoading()
+  when {
+    uiState.cityDetails != null -> {
+      uiState.cityDetails?.let {
+        DetailsContent(
+          exploreModel = it,
+          modifier.fillMaxSize()
+        )
+      }
+    }
+    uiState.isLoading -> {
+      Box(modifier = modifier.fillMaxSize()) {
+        CircularProgressIndicator(
+          color = MaterialTheme.colors.onSurface,
+          modifier = Modifier.align(Alignment.Center)
+        )
+      }
+    }
+    else -> {
+      onErrorLoading()
+    }
   }
 }
 
