@@ -4,6 +4,9 @@ import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.animation.core.Spring
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.spring
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -58,7 +61,9 @@ fun MyApp(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun OnboardingScreen(onContinueClicked: () -> Unit, modifier: Modifier = Modifier) {
+private fun OnboardingScreen(
+  onContinueClicked: () -> Unit,
+  modifier: Modifier = Modifier) {
   Column(
     modifier = modifier.fillMaxSize(),
     verticalArrangement = Arrangement.Center,
@@ -95,17 +100,26 @@ private fun Greetings(
 private fun Greeting(name: String) {
   var isExpanded by remember { mutableStateOf(false) }
 
-  val extraPadding = if (isExpanded) 48.dp else 0.dp
+  val extraPadding by animateDpAsState(
+    targetValue = if (isExpanded) 48.dp else 0.dp,
+    animationSpec = spring(
+      dampingRatio = Spring.DampingRatioMediumBouncy,
+      stiffness = Spring.StiffnessLow
+    )
+  )
 
   Surface(
     color = MaterialTheme.colors.primary,
-    modifier = Modifier.padding(vertical = 4.dp, horizontal = 8.dp)) {
+    modifier = Modifier.padding(
+      vertical = 4.dp,
+      horizontal = 8.dp
+    )) {
 
     Row(modifier = Modifier.padding(24.dp)) {
       Column(
         modifier = Modifier
           .weight(1f)
-          .padding(bottom = extraPadding)) {
+          .padding(bottom = extraPadding.coerceAtLeast(0.dp))) {
         Text(
           text = "Hello,",
           color = MaterialTheme.colors.secondary
