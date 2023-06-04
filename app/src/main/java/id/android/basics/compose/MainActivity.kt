@@ -22,7 +22,9 @@ import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.Icon
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
@@ -181,6 +183,22 @@ private fun HomeSection(
   }
 }
 
+@Composable
+private fun HomeScreen(modifier: Modifier = Modifier) {
+  Column(
+    modifier
+      .verticalScroll(rememberScrollState())
+      .padding(vertical = 16.dp)) {
+    SearchBar(modifier = Modifier.padding(horizontal = 16.dp))
+    HomeSection(title = R.string.align_your_body) {
+      AlignYourBodyRow()
+    }
+    HomeSection(title = R.string.favorite_collections) {
+      FavoriteCollectionsGrid()
+    }
+  }
+}
+
 @Preview(
   showBackground = true,
   backgroundColor = 0xFFF0EAE2
@@ -249,4 +267,14 @@ private fun HomeSectionPreview() {
       AlignYourBodyRow()
     }
   }
+}
+
+@Preview(
+  showBackground = true,
+  backgroundColor = 0xFFF0EAE2,
+  heightDp = 180
+)
+@Composable
+private fun ScreenContentPreview() {
+  ComposerTheme { HomeScreen() }
 }
