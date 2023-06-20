@@ -1,5 +1,5 @@
 <resources>
-  <style name="Theme.Composer" parent="Theme.MaterialComponents.NoActionBar">
+  <style name="Theme.Composer" parent="Theme.Material3.DayNight.NoActionBar">
     <item name="android:statusBarColor">@color/statusBarColor</item>
     <item name="android:windowLightStatusBar">true</item>
     <item name="android:windowBackground">?attr/colorSurface</item>

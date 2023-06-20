@@ -29,41 +29,16 @@ import androidx.compose.ui.unit.dp
 import id.android.basics.compose.R
 import java.text.DecimalFormat
 
-private val AccountDecimalFormat = DecimalFormat("####")
-private val AmountDecimalFormat = DecimalFormat("#,###.##")
-
-fun formatAmount(amount: Float): String =
-  AmountDecimalFormat.format(amount)
-
-/**
- * Used with accounts and bills to create the animated circle
- */
-fun <E> List<E>.extractProportions(selector: (E) -> Float): List<Float> {
-  val total = this.sumOf {
-    selector(it).toDouble()
-  }
-
-  return this.map {
-    (selector(it) / total).toFloat()
-  }
-}
-
 /**
  * A row representing the basic information of an Account
  */
 @Composable
-fun AccountRow(
-  modifier: Modifier = Modifier,
-  name: String,
-  number: Int,
-  amount: Float,
-  color: Color) {
-  val subtitle = stringResource(R.string.account_redacted)
+fun AccountRow(name: String, number: Int, amount: Float, color: Color) {
+  val subtitleStringResource = stringResource(R.string.account_redacted)
   BaseRow(
-    modifier = modifier,
     color = color,
     title = name,
-    subtitle = "$subtitle ${AccountDecimalFormat.format(number)}",
+    subtitle = "$subtitleStringResource ${AccountDecimalFormat.format(number)}",
     amount = amount,
     negative = false
   )
@@ -73,11 +48,7 @@ fun AccountRow(
  * A row representing the basic information of a Bill
  */
 @Composable
-fun BillRow(
-  name: String,
-  due: String,
-  amount: Float,
-  color: Color) {
+fun BillRow(name: String, due: String, amount: Float, color: Color) {
   BaseRow(
     color = color,
     title = name,
@@ -88,30 +59,15 @@ fun BillRow(
 }
 
 @Composable
-fun ComposerDivider(modifier: Modifier = Modifier) {
-  Divider(
-    color = MaterialTheme.colors.background,
-    thickness = 1.dp,
-    modifier = modifier
-  )
-}
-
-@Composable
-private fun BaseRow(
-  modifier: Modifier = Modifier,
-  color: Color,
-  title: String,
-  subtitle: String,
-  amount: Float,
-  negative: Boolean) {
+private fun BaseRow(color: Color, title: String, subtitle: String, amount: Float, negative: Boolean) {
   val dollarSign = if (negative) "–$ " else "$ "
   val formattedAmount = formatAmount(amount)
-
   Row(
-    modifier = modifier
+    modifier = Modifier
       .height(68.dp)
-      .clearAndSetSemantics { contentDescription =
-        "$title account ending in ${subtitle.takeLast(4)}, current balance $dollarSign$formattedAmount"
+      .clearAndSetSemantics {
+        contentDescription =
+          "$title account ending in ${subtitle.takeLast(4)}, current balance $dollarSign$formattedAmount"
       },
     verticalAlignment = Alignment.CenterVertically
   ) {
@@ -164,12 +120,34 @@ private fun BaseRow(
  * A vertical colored line that is used in a [BaseRow] to differentiate accounts
  */
 @Composable
-private fun AccountIndicator(
-  color: Color,
-  modifier: Modifier = Modifier) {
+private fun AccountIndicator(color: Color, modifier: Modifier = Modifier) {
   Spacer(
     modifier
-      .size(4.dp, 36.dp)
+      .size(
+        4.dp,
+        36.dp
+      )
       .background(color = color)
   )
+}
+
+@Composable
+fun ComposerDivider(modifier: Modifier = Modifier) {
+  Divider(
+    color = MaterialTheme.colors.background,
+    thickness = 1.dp,
+    modifier = modifier
+  )
+}
+
+private val AccountDecimalFormat = DecimalFormat("####")
+private val AmountDecimalFormat = DecimalFormat("#,###.##")
+fun formatAmount(amount: Float): String = AmountDecimalFormat.format(amount)
+
+/**
+ * Used with accounts and bills to create the animated circle
+ */
+fun <E> List<E>.extractProportions(selector: (E) -> Float): List<Float> {
+  val total = this.sumOf { selector(it).toDouble() }
+  return this.map { (selector(it).div(total)).toFloat() }
 }

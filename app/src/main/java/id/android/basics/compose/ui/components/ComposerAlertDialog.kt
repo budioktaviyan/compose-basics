@@ -16,26 +16,24 @@ import androidx.compose.ui.unit.dp
 import id.android.basics.compose.ui.theme.ComposerDialogThemeOverlay
 
 @Composable
-fun ComposerAlertDialog(
-  onDismiss: () -> Unit,
-  bodyText: String,
-  buttonText: String) {
+fun ComposerAlertDialog(onDismiss: () -> Unit, bodyText: String, buttonText: String) {
   ComposerDialogThemeOverlay {
     AlertDialog(
       onDismissRequest = onDismiss,
-      text = { Text(text = bodyText) },
+      text = { Text(bodyText) },
       buttons = {
         Column {
           Divider(
-            modifier = Modifier.padding(horizontal = 12.dp),
+            Modifier.padding(horizontal = 12.dp),
             color = MaterialTheme.colors.onSurface.copy(alpha = 0.2f)
           )
           TextButton(
             onClick = onDismiss,
             shape = RectangleShape,
-            contentPadding = PaddingValues(all = 16.dp),
-            modifier = Modifier.fillMaxWidth()) {
-            Text(text = buttonText)
+            contentPadding = PaddingValues(16.dp),
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            Text(buttonText)
           }
         }
       }

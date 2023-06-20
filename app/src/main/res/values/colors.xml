@@ -1,3 +1,4 @@
 <resources>
   <color name="statusBarColor">#EFEFEF</color>
+  <color name="backgroundColor">#26282F</color>
 </resources>

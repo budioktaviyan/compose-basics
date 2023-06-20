@@ -1,7 +1,8 @@
 package id.android.basics.compose.ui.overview
 
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -21,6 +22,7 @@ import androidx.compose.material.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Sort
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,9 +32,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.clearAndSetSemantics
-import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import id.android.basics.compose.ComposerScreen
 import id.android.basics.compose.R
 import id.android.basics.compose.data.UserData
 import id.android.basics.compose.ui.components.AccountRow
@@ -40,33 +43,28 @@ import id.android.basics.compose.ui.components.BillRow
 import id.android.basics.compose.ui.components.ComposerAlertDialog
 import id.android.basics.compose.ui.components.ComposerDivider
 import id.android.basics.compose.ui.components.formatAmount
+import id.android.basics.compose.ui.theme.ComposerTheme
 import java.util.Locale
 
-private const val SHOWN_ITEMS = 3
-
-private val ComposerDefaultPadding = 12.dp
-
 @Composable
-fun OverviewScreen(
-  onClickSeeAllAccounts: () -> Unit = {},
-  onClickSeeAllBills: () -> Unit = {},
-  onAccountClick: (String) -> Unit = {}) {
-  Column(
-    modifier = Modifier
+fun OverviewBody(onScreenChange: (ComposerScreen) -> Unit = {}) {
+  Column(modifier = Modifier
     .padding(16.dp)
     .verticalScroll(rememberScrollState())
-    .semantics {
-      contentDescription = "Overview Screen"
-    }
   ) {
     AlertCard()
     Spacer(Modifier.height(ComposerDefaultPadding))
-    AccountsCard(
-      onClickSeeAll = onClickSeeAllAccounts,
-      onAccountClick = onAccountClick
-    )
+    AccountsCard(onScreenChange)
     Spacer(Modifier.height(ComposerDefaultPadding))
-    BillsCard(onClickSeeAll = onClickSeeAllBills)
+    BillsCard(onScreenChange)
+  }
+}
+
+@Preview
+@Composable
+fun AlertCardPreview() {
+  ComposerTheme {
+    OverviewBody()
   }
 }
 
@@ -76,22 +74,35 @@ fun OverviewScreen(
 @Composable
 private fun AlertCard() {
   var showDialog by remember { mutableStateOf(false) }
-  val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month"
+  val alertMessage = "Heads up, you've used up 90% of your Shopping budget for this month."
 
   if (showDialog) {
     ComposerAlertDialog(
-      onDismiss = {
-        showDialog = false
-      },
+      onDismiss = { showDialog = false },
       bodyText = alertMessage,
       buttonText = "Dismiss".uppercase(Locale.getDefault())
     )
   }
-  Card {
-    Column {
-      AlertHeader {
-        showDialog = true
+
+  var currentTargetElevation by remember { mutableStateOf(1.dp) }
+  LaunchedEffect(Unit) {
+    // Start the animation
+    currentTargetElevation = 8.dp
+  }
+  val animatedElevation = animateDpAsState(
+    targetValue = currentTargetElevation,
+    animationSpec = tween(durationMillis = 500),
+    finishedListener = {
+      currentTargetElevation = if (currentTargetElevation > 4.dp) {
+        1.dp
+      } else {
+        8.dp
       }
+    }
+  )
+  Card(elevation = animatedElevation.value) {
+    Column {
+      AlertHeader { showDialog = true }
       ComposerDivider(
         modifier = Modifier.padding(
           start = ComposerDefaultPadding,
@@ -129,6 +140,7 @@ private fun AlertHeader(onClickSeeAll: () -> Unit) {
   }
 }
 
+@Suppress("SameParameterValue")
 @Composable
 private fun AlertItem(message: String) {
   Row(
@@ -151,8 +163,8 @@ private fun AlertItem(message: String) {
     IconButton(
       onClick = {},
       modifier = Modifier
-      .align(Alignment.Top)
-      .clearAndSetSemantics {}) {
+        .align(Alignment.Top)
+        .clearAndSetSemantics {}) {
       Icon(
         Icons.Filled.Sort,
         contentDescription = null
@@ -165,21 +177,17 @@ private fun AlertItem(message: String) {
  * The Accounts card within the Composer Overview screen
  */
 @Composable
-private fun AccountsCard(
-  onClickSeeAll: () -> Unit,
-  onAccountClick: (String) -> Unit) {
+private fun AccountsCard(onScreenChange: (ComposerScreen) -> Unit) {
   val amount = UserData.accounts.map { account -> account.balance }.sum()
-
   OverviewScreenCard(
     title = stringResource(R.string.accounts),
     amount = amount,
-    onClickSeeAll = onClickSeeAll,
+    onClickSeeAll = { onScreenChange(ComposerScreen.Accounts) },
     data = UserData.accounts,
     colors = { it.color },
     values = { it.balance }
   ) { account ->
     AccountRow(
-      modifier = Modifier.clickable { onAccountClick(account.name) },
       name = account.name,
       number = account.number,
       amount = account.balance,
@@ -192,16 +200,16 @@ private fun AccountsCard(
  * The Bills card within the Composer Overview screen
  */
 @Composable
-private fun BillsCard(onClickSeeAll: () -> Unit) {
+private fun BillsCard(onScreenChange: (ComposerScreen) -> Unit) {
   val amount = UserData.bills.map { bill -> bill.amount }.sum()
-
   OverviewScreenCard(
     title = stringResource(R.string.bills),
     amount = amount,
-    onClickSeeAll = onClickSeeAll,
+    onClickSeeAll = { onScreenChange(ComposerScreen.Bills) },
     data = UserData.bills,
     colors = { it.color },
-    values = { it.amount }) { bill ->
+    values = { it.amount }
+  ) { bill ->
     BillRow(
       name = bill.name,
       due = bill.due,
@@ -222,7 +230,8 @@ private fun <T> OverviewScreenCard(
   values: (T) -> Float,
   colors: (T) -> Color,
   data: List<T>,
-  row: @Composable (T) -> Unit) {
+  row: @Composable (T) -> Unit
+) {
   Card {
     Column {
       Column(Modifier.padding(ComposerDefaultPadding)) {
@@ -230,7 +239,6 @@ private fun <T> OverviewScreenCard(
           text = title,
           style = MaterialTheme.typography.subtitle2
         )
-
         val amountText = "$${formatAmount(amount)}"
         Text(
           text = amountText,
@@ -250,22 +258,14 @@ private fun <T> OverviewScreenCard(
         )
       ) {
         data.take(SHOWN_ITEMS).forEach { row(it) }
-        SeeAllButton(
-          modifier = Modifier.clearAndSetSemantics {
-            contentDescription = "All $title"
-          },
-          onClick = onClickSeeAll
-        )
+        SeeAllButton(onClick = onClickSeeAll)
       }
     }
   }
 }
 
 @Composable
-private fun <T> OverViewDivider(
-  data: List<T>,
-  values: (T) -> Float,
-  colors: (T) -> Color) {
+private fun <T> OverViewDivider(data: List<T>, values: (T) -> Float, colors: (T) -> Color) {
   Row(Modifier.fillMaxWidth()) {
     data.forEach { item: T ->
       Spacer(
@@ -279,15 +279,17 @@ private fun <T> OverViewDivider(
 }
 
 @Composable
-private fun SeeAllButton(
-  modifier: Modifier = Modifier,
-  onClick: () -> Unit) {
+private fun SeeAllButton(onClick: () -> Unit) {
   TextButton(
     onClick = onClick,
-    modifier = modifier
+    modifier = Modifier
       .height(44.dp)
       .fillMaxWidth()
   ) {
-    Text(text = stringResource(R.string.see_all))
+    Text(stringResource(R.string.see_all))
   }
 }
+
+private const val SHOWN_ITEMS = 3
+
+private val ComposerDefaultPadding = 12.dp

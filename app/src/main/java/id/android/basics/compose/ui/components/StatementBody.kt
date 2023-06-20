@@ -21,19 +21,11 @@ import androidx.compose.ui.unit.dp
  * Generic component used by the accounts and bills screens to show a chart and a list of items
  */
 @Composable
-fun <T> StatementBody(
-  modifier: Modifier = Modifier,
-  items: List<T>,
-  colors: (T) -> Color,
-  amounts: (T) -> Float,
-  amountsTotal: Float,
-  circleLabel: String,
-  rows: @Composable (T) -> Unit) {
-  Column(modifier = modifier.verticalScroll(rememberScrollState())) {
+fun <T> StatementBody(items: List<T>, colors: (T) -> Color, amounts: (T) -> Float, amountsTotal: Float, circleLabel: String, rows: @Composable (T) -> Unit) {
+  Column(modifier = Modifier.verticalScroll(rememberScrollState())) {
     Box(Modifier.padding(16.dp)) {
       val accountsProportion = items.extractProportions { amounts(it) }
       val circleColors = items.map { colors(it) }
-
       AnimatedCircle(
         accountsProportion,
         circleColors,

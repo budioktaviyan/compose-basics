@@ -29,21 +29,11 @@ import androidx.compose.ui.semantics.clearAndSetSemantics
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import id.android.basics.compose.MainDestination
+import id.android.basics.compose.ComposerScreen
 import java.util.Locale
 
-private const val InactiveTabOpacity = 0.60f
-private const val TabFadeInAnimationDuration = 150
-private const val TabFadeInAnimationDelay = 100
-private const val TabFadeOutAnimationDuration = 100
-
-private val TabHeight = 56.dp
-
 @Composable
-fun ComposerTabRow(
-  allScreens: List<MainDestination>,
-  onTabSelected: (MainDestination) -> Unit,
-  currentScreen: MainDestination) {
+fun ComposerTopAppBar(allScreens: List<ComposerScreen>, onTabSelected: (ComposerScreen) -> Unit, currentScreen: ComposerScreen) {
   Surface(
     Modifier
       .height(TabHeight)
@@ -52,7 +42,7 @@ fun ComposerTabRow(
     Row(Modifier.selectableGroup()) {
       allScreens.forEach { screen ->
         ComposerTab(
-          text = screen.route,
+          text = screen.name,
           icon = screen.icon,
           onSelected = { onTabSelected(screen) },
           selected = currentScreen == screen
@@ -63,11 +53,7 @@ fun ComposerTabRow(
 }
 
 @Composable
-private fun ComposerTab(
-  text: String,
-  icon: ImageVector,
-  onSelected: () -> Unit,
-  selected: Boolean) {
+private fun ComposerTab(text: String, icon: ImageVector, onSelected: () -> Unit, selected: Boolean) {
   val color = MaterialTheme.colors.onSurface
   val durationMillis = if (selected) TabFadeInAnimationDuration else TabFadeOutAnimationDuration
   val animSpec = remember {
@@ -77,14 +63,11 @@ private fun ComposerTab(
       delayMillis = TabFadeInAnimationDelay
     )
   }
-
   val tabTintColor by animateColorAsState(
     targetValue = if (selected) color else color.copy(alpha = InactiveTabOpacity),
     animationSpec = animSpec
   )
-
-  Row(
-    modifier = Modifier
+  Row(modifier = Modifier
     .padding(16.dp)
     .animateContentSize()
     .height(TabHeight)
@@ -99,22 +82,26 @@ private fun ComposerTab(
         color = Color.Unspecified
       )
     )
-    .clearAndSetSemantics {
-      contentDescription = text
-    }
+    .clearAndSetSemantics { contentDescription = text }
   ) {
     Icon(
       imageVector = icon,
-      contentDescription = text,
+      contentDescription = null,
       tint = tabTintColor
     )
-
     if (selected) {
       Spacer(Modifier.width(12.dp))
       Text(
-        text = text.uppercase(Locale.getDefault()),
+        text.uppercase(Locale.getDefault()),
         color = tabTintColor
       )
     }
   }
 }
+
+private const val InactiveTabOpacity = 0.60f
+private const val TabFadeInAnimationDuration = 150
+private const val TabFadeInAnimationDelay = 100
+private const val TabFadeOutAnimationDuration = 100
+
+private val TabHeight = 56.dp

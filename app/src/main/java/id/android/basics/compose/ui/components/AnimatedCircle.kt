@@ -18,30 +18,28 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
 
-private const val DividerLengthInDegrees = 1.8f
-
 private enum class AnimatedCircleProgress {
   START,
   END
 }
 
+private const val DividerLengthInDegrees = 1.8f
+
 /**
  * A donut chart that animates when loaded
  */
 @Composable
-fun AnimatedCircle(
-  proportions: List<Float>,
-  colors: List<Color>,
-  modifier: Modifier = Modifier) {
+fun AnimatedCircle(proportions: List<Float>, colors: List<Color>, modifier: Modifier = Modifier) {
   val currentState = remember {
     MutableTransitionState(AnimatedCircleProgress.START).apply {
       targetState = AnimatedCircleProgress.END
     }
   }
-
   val stroke = with(LocalDensity.current) { Stroke(5.dp.toPx()) }
-  val transition = updateTransition(currentState, label = null)
-
+  val transition = updateTransition(
+    currentState,
+    label = ""
+  )
   val angleOffset by transition.animateFloat(
     transitionSpec = {
       tween(
@@ -50,7 +48,7 @@ fun AnimatedCircle(
         easing = LinearOutSlowInEasing
       )
     },
-    label = null.toString(),
+    label = ""
   ) { progress ->
     if (progress == AnimatedCircleProgress.START) {
       0f
@@ -58,7 +56,6 @@ fun AnimatedCircle(
       360f
     }
   }
-
   val shift by transition.animateFloat(
     transitionSpec = {
       tween(
@@ -72,7 +69,7 @@ fun AnimatedCircle(
         )
       )
     },
-    label = null.toString(),
+    label = ""
   ) { progress ->
     if (progress == AnimatedCircleProgress.START) {
       0f
@@ -80,25 +77,24 @@ fun AnimatedCircle(
       30f
     }
   }
-
   Canvas(modifier) {
-    val innerRadius = (size.minDimension - stroke.width) / 2
-    val halfSize = size / 2.0f
+    val innerRadius = (size.minDimension.minus(stroke.width)).div(2)
+    val halfSize = size.div(2.0f)
     val topLeft = Offset(
-      halfSize.width - innerRadius,
-      halfSize.height - innerRadius
+      halfSize.width.minus(innerRadius),
+      halfSize.height.minus(innerRadius)
     )
-
-    val size = Size(innerRadius * 2, innerRadius * 2)
-    var startAngle = shift - 90f
-
+    val size = Size(
+      innerRadius.times(2),
+      innerRadius.times(2)
+    )
+    var startAngle = shift.minus(90f)
     proportions.forEachIndexed { index, proportion ->
-      val sweep = proportion * angleOffset
-
+      val sweep = proportion.times(angleOffset)
       drawArc(
         color = colors[index],
-        startAngle = startAngle + DividerLengthInDegrees / 2,
-        sweepAngle = sweep - DividerLengthInDegrees,
+        startAngle = startAngle.plus(DividerLengthInDegrees).div(2),
+        sweepAngle = sweep.minus(DividerLengthInDegrees),
         topLeft = topLeft,
         size = size,
         useCenter = false,

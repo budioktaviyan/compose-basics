@@ -3,9 +3,6 @@ package id.android.basics.compose.data
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
 
-/**
- * Hard-coded data for the app sample
- */
 @Immutable
 data class Account(
   val name: String,
@@ -22,11 +19,7 @@ data class Bill(
   val color: Color
 )
 
-/**
- * Pretend repository for user's data
- */
 object UserData {
-
   val accounts: List<Account> = listOf(
     Account(
       "Checking",
@@ -53,7 +46,6 @@ object UserData {
       Color(0xFF37EFBA)
     )
   )
-
   val bills: List<Bill> = listOf(
     Bill(
       "RedPay Credit",
@@ -86,7 +78,4 @@ object UserData {
       Color(0xFFFFAC12)
     )
   )
-
-  fun getAccount(accountName: String?): Account =
-    accounts.first { it.name == accountName }
 }
