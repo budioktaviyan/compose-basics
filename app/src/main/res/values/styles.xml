@@ -1,7 +1,8 @@
 <resources>
-  <style name="Theme.Composer" parent="Theme.Material3.DayNight.NoActionBar">
-    <item name="android:statusBarColor">@color/statusBarColor</item>
-    <item name="android:windowLightStatusBar">true</item>
-    <item name="android:windowBackground">?attr/colorSurface</item>
+  <style name="Theme.Composer" parent="Theme.AppCompat.Light.NoActionBar">
+    <item name="colorPrimary">@color/red700</item>
+    <item name="colorPrimaryDark">@color/red900</item>
+    <item name="colorAccent">@color/red700</item>
+    <item name="android:statusBarColor">@color/status_bar</item>
   </style>
 </resources>
