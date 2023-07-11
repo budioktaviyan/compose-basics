@@ -18,8 +18,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Devices
 import androidx.compose.ui.tooling.preview.Preview
+import id.android.basics.compose.R
 import id.android.basics.compose.data.posts.PostsRepository
 import id.android.basics.compose.data.posts.post3
 import id.android.basics.compose.model.Post
@@ -76,7 +78,7 @@ fun ArticleScreen(
           IconButton(onClick = onBack) {
             Icon(
               imageVector = Icons.Filled.ArrowBack,
-              contentDescription = null
+              contentDescription = stringResource(id = R.string.cd_navigate_up)
             )
           }
         }
