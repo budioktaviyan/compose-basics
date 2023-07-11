@@ -43,10 +43,7 @@ fun ArticleScreen(
   postsRepository: PostsRepository,
   onBack: () -> Unit) {
   val postData = postsRepository.getPost(postId) ?: throw Exception()
-  ArticleScreen(
-    post = postData,
-    onBack = onBack
-  )
+  ArticleScreen(post = postData, onBack = onBack)
 }
 
 /**
@@ -83,7 +80,8 @@ fun ArticleScreen(
           }
         }
       )
-    }) { innerPadding ->
+    }
+  ) { innerPadding ->
     PostContent(
       post = post,
       modifier = Modifier

@@ -5,7 +5,6 @@ import id.android.basics.compose.data.AppContainer
 import id.android.basics.compose.data.AppContainerImpl
 
 class ComposerApplication : Application() {
-
   /**
    * AppContainer instance used by the rest of classes to obtain dependencies
    */
@@ -13,6 +12,6 @@ class ComposerApplication : Application() {
 
   override fun onCreate() {
     super.onCreate()
-    container = AppContainerImpl(this)
+    container = AppContainerImpl()
   }
 }

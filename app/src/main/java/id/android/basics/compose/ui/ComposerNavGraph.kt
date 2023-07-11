@@ -20,6 +20,7 @@ import kotlinx.coroutines.launch
  * Destinations used in the ([ComposerApp])
  */
 object MainDestinations {
+
   const val HOME_ROUTE = "home"
   const val INTERESTS_ROUTE = "interests"
   const val ARTICLE_ROUTE = "post"

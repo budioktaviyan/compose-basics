@@ -83,7 +83,7 @@ fun HomeScreen(
       InsetAwareTopAppBar(
         title = { Text(text = title) },
         navigationIcon = {
-          IconButton(onClick = { coroutineScope.launch { openDrawer() } }) {
+          IconButton(onClick = { coroutineScope.launch { openDrawer() } } ) {
             Icon(
               painter = painterResource(R.drawable.ic_composer_logo),
               contentDescription = stringResource(R.string.cd_open_navigation_drawer)
@@ -91,7 +91,8 @@ fun HomeScreen(
           }
         }
       )
-  }) { innerPadding ->
+    }
+  ) { innerPadding ->
     val modifier = Modifier.padding(innerPadding)
     PostList(
       posts,
@@ -110,8 +111,8 @@ fun PreviewHomeScreen() {
   ComposerTheme {
     HomeScreen(
       posts = PostsRepository().getPosts(),
-      navigateToArticle = { /*TODO*/ },
-      openDrawer = { /*TODO*/ },
+      navigateToArticle = { /* no content */ },
+      openDrawer = { /* no content */ },
       scaffoldState = rememberScaffoldState()
     )
   }
@@ -149,17 +150,11 @@ private fun PostList(
     modifier = modifier,
     contentPadding = contentPadding) {
     items(postsHistory) { post ->
-      PostCardHistory(
-        post,
-        navigateToArticle
-      )
+      PostCardHistory(post, navigateToArticle)
       PostListDivider()
     }
     item {
-      PostListPopularSection(
-        postsPopular,
-        navigateToArticle
-      )
+      PostListPopularSection(postsPopular, navigateToArticle)
     }
   }
 }
@@ -185,10 +180,7 @@ private fun PostListPopularSection(
         PostCardPopular(
           post,
           navigateToArticle,
-          Modifier.padding(
-            start = 16.dp,
-            bottom = 16.dp
-          )
+          Modifier.padding(start = 16.dp, bottom = 16.dp)
         )
       }
     }

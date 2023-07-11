@@ -50,18 +50,22 @@ import id.android.basics.compose.ui.theme.ComposerTheme
 fun PostCardHistory(
   post: Post,
   navigateToArticle: (String) -> Unit) {
-  var openDialog by remember { mutableStateOf(false) }
   val showFewerLabel = stringResource(R.string.cd_show_fewer)
-  Row(Modifier.clickable(
-    onClickLabel = stringResource(id = R.string.action_read_article)
-  ) { navigateToArticle(post.id) }.semantics {
-    customActions = listOf(
-      CustomAccessibilityAction(
-        label = showFewerLabel,
-        action = { openDialog = true; true }
-      )
-    )
-  }) {
+
+  var openDialog by remember { mutableStateOf(false) }
+  Row(Modifier
+      .clickable(onClickLabel = stringResource(id = R.string.action_read_article)) {
+        navigateToArticle(post.id)
+      }
+      .semantics {
+        customActions = listOf(
+          CustomAccessibilityAction(
+            label = showFewerLabel,
+            action = { openDialog = true; true }
+          )
+        )
+      }
+  ) {
     Image(
       painter = painterResource(post.imageThumbId),
       contentDescription = null,
@@ -192,10 +196,7 @@ fun PostCardPopular(
 fun PreviewPostCardPopular() {
   ComposerTheme {
     Surface {
-      PostCardPopular(
-        post1,
-        { /* no content */ }
-      )
+      PostCardPopular(post1, { /* no content */ })
     }
   }
 }

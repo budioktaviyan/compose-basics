@@ -70,8 +70,7 @@ private data class ParagraphStyling(
 fun PostContent(
   post: Post,
   modifier: Modifier = Modifier) {
-  LazyColumn(
-    modifier = modifier.padding(horizontal = defaultSpacerSize)) {
+  LazyColumn(modifier = modifier.padding(horizontal = defaultSpacerSize)) {
     item {
       Spacer(Modifier.height(defaultSpacerSize))
       PostHeaderImage(post)
@@ -146,10 +145,7 @@ fun Markup.toAnnotatedStringItem(
     }
     MarkupType.Code -> {
       AnnotatedString.Range(
-        typography.body1.copy(
-          background = codeBlockBackground,
-          fontFamily = FontFamily.Monospace
-        ).toSpanStyle(),
+        typography.body1.copy(background = codeBlockBackground, fontFamily = FontFamily.Monospace).toSpanStyle(),
         start,
         end
       )
@@ -175,7 +171,7 @@ private fun PostHeaderImage(post: Post) {
 @Composable
 private fun PostMetadata(metadata: Metadata) {
   val typography = MaterialTheme.typography
-  Row(Modifier.semantics(mergeDescendants = true) { /* no content */ }) {
+  Row(Modifier.semantics(mergeDescendants = true) { /* no content */ } ) {
     Image(
       imageVector = Icons.Filled.AccountCircle,
       contentDescription = null,
@@ -204,7 +200,8 @@ private fun PostMetadata(metadata: Metadata) {
 private fun Paragraph(paragraph: Paragraph) {
   val (textStyle, paragraphStyle, trailingPadding) = paragraph.type.getTextAndParagraphStyle()
   val annotatedString = paragraphToAnnotatedString(
-    paragraph, MaterialTheme.typography,
+    paragraph,
+    MaterialTheme.typography,
     MaterialTheme.colors.codeBlockBackground
   )
   Box(modifier = Modifier.padding(bottom = trailingPadding)) {
@@ -221,7 +218,9 @@ private fun Paragraph(paragraph: Paragraph) {
       )
       ParagraphType.Header -> {
         Text(
-          modifier = Modifier.padding(4.dp).semantics { heading() },
+          modifier = Modifier
+            .padding(4.dp)
+            .semantics { heading() },
           text = annotatedString,
           style = textStyle.merge(paragraphStyle)
         )
@@ -273,10 +272,7 @@ private fun BulletParagraph(
              */
             9.sp.roundToPx()
           }
-          .background(
-            LocalContentColor.current,
-            CircleShape
-          ),
+          .background(LocalContentColor.current, CircleShape),
       ) { /* no content */ }
     }
     Text(
