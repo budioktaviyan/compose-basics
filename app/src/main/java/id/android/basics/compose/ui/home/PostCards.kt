@@ -32,6 +32,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.CustomAccessibilityAction
+import androidx.compose.ui.semantics.clearAndSetSemantics
+import androidx.compose.ui.semantics.customActions
 import androidx.compose.ui.semantics.onClick
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
@@ -48,29 +51,29 @@ fun PostCardHistory(
   post: Post,
   navigateToArticle: (String) -> Unit) {
   var openDialog by remember { mutableStateOf(false) }
-  Row(
-    Modifier.clickable(
-      onClickLabel = stringResource(id = R.string.action_read_article)
-    ) { navigateToArticle(post.id) }) {
+  val showFewerLabel = stringResource(R.string.cd_show_fewer)
+  Row(Modifier.clickable(
+    onClickLabel = stringResource(id = R.string.action_read_article)
+  ) { navigateToArticle(post.id) }.semantics {
+    customActions = listOf(
+      CustomAccessibilityAction(
+        label = showFewerLabel,
+        action = { openDialog = true; true }
+      )
+    )
+  }) {
     Image(
       painter = painterResource(post.imageThumbId),
       contentDescription = null,
       modifier = Modifier
-        .padding(
-          top = 16.dp,
-          start = 16.dp,
-          end = 16.dp
-        )
+        .padding(top = 16.dp, start = 16.dp, end = 16.dp)
         .size(40.dp, 40.dp)
         .clip(MaterialTheme.shapes.small)
     )
     Column(
       Modifier
         .weight(1f)
-        .padding(
-          top = 16.dp,
-          bottom = 16.dp
-        )
+        .padding(top = 16.dp, bottom = 16.dp)
     ) {
       Text(
         post.title,
@@ -91,10 +94,13 @@ fun PostCardHistory(
       }
     }
     CompositionLocalProvider(LocalContentAlpha provides ContentAlpha.medium) {
-      IconButton(onClick = { openDialog = true }) {
+      IconButton(
+        modifier = Modifier.clearAndSetSemantics { /* no content */ },
+        onClick = { openDialog = true }
+      ) {
         Icon(
           imageVector = Icons.Default.Close,
-          contentDescription = stringResource(R.string.cd_show_fewer)
+          contentDescription = showFewerLabel
         )
       }
     }
