@@ -175,7 +175,7 @@ private fun PostHeaderImage(post: Post) {
 @Composable
 private fun PostMetadata(metadata: Metadata) {
   val typography = MaterialTheme.typography
-  Row {
+  Row(Modifier.semantics(mergeDescendants = true) { /* no content */ }) {
     Image(
       imageVector = Icons.Filled.AccountCircle,
       contentDescription = null,
@@ -266,10 +266,7 @@ private fun BulletParagraph(
        */
       Box(
         modifier = Modifier
-          .size(
-            8.sp.toDp(),
-            8.sp.toDp()
-          )
+          .size(8.sp.toDp(), 8.sp.toDp())
           .alignBy {
             /**
              * Add an alignment "baseline" 1sp below the bottom of the circle
