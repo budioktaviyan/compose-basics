@@ -39,11 +39,13 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import id.android.basics.compose.R
+import id.android.basics.compose.ui.utils.DevicePosture
 
 @Composable
 fun ComposerApp(
   composerHomeUIState: ComposerHomeUIState,
-  windowSize: WindowWidthSizeClass) {
+  windowSize: WindowWidthSizeClass,
+  foldingDevicePosture: DevicePosture) {
   /* You will add navigation info here */
   ComposerNavigationWrapperUI(composerHomeUIState)
 }
