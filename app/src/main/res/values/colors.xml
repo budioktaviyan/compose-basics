@@ -1,5 +1,0 @@
-<resources>
-  <color name="red700">#dd0d3e</color>
-  <color name="red900">#c20029</color>
-  <color name="status_bar">@color/red900</color>
-</resources>
