@@ -4,12 +4,16 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
+import androidx.compose.material3.windowsizeclass.ExperimentalMaterial3WindowSizeClassApi
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
+import androidx.compose.material3.windowsizeclass.calculateWindowSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.tooling.preview.Preview
 import id.android.basics.compose.data.local.LocalEmailsDataProvider
 import id.android.basics.compose.ui.theme.ComposerTheme
 
+@OptIn(ExperimentalMaterial3WindowSizeClassApi::class)
 class MainActivity : ComponentActivity() {
 
   private val viewModel: ComposerHomeViewModel by viewModels()
@@ -20,7 +24,11 @@ class MainActivity : ComponentActivity() {
     setContent {
       ComposerTheme {
         val uiState = viewModel.uiState.collectAsState().value
-        ComposerApp(composerHomeUIState = uiState)
+        val windowSize = calculateWindowSizeClass(activity = this)
+        ComposerApp(
+          composerHomeUIState = uiState,
+          windowSize = windowSize.widthSizeClass
+        )
       }
     }
   }
@@ -31,7 +39,11 @@ class MainActivity : ComponentActivity() {
 fun ComposerAppPreview() {
   ComposerTheme {
     val uiState = ComposerHomeUIState(emails = LocalEmailsDataProvider.allEmails)
-    ComposerApp(composerHomeUIState = uiState)
+    val windowSize = WindowWidthSizeClass.Compact
+    ComposerApp(
+      composerHomeUIState = uiState,
+      windowSize = windowSize
+    )
   }
 }
 
@@ -40,7 +52,11 @@ fun ComposerAppPreview() {
 fun ComposerAppPreviewTablet() {
   ComposerTheme {
     val uiState = ComposerHomeUIState(emails = LocalEmailsDataProvider.allEmails)
-    ComposerApp(composerHomeUIState = uiState)
+    val windowSize = WindowWidthSizeClass.Medium
+    ComposerApp(
+      composerHomeUIState = uiState,
+      windowSize = windowSize
+    )
   }
 }
 
@@ -49,6 +65,10 @@ fun ComposerAppPreviewTablet() {
 fun ComposerAppPreviewDesktop() {
   ComposerTheme {
     val uiState = ComposerHomeUIState(emails = LocalEmailsDataProvider.allEmails)
-    ComposerApp(composerHomeUIState = uiState)
+    val windowSize = WindowWidthSizeClass.Expanded
+    ComposerApp(
+      composerHomeUIState = uiState,
+      windowSize = windowSize
+    )
   }
 }

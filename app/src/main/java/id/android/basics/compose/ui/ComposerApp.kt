@@ -30,6 +30,7 @@ import androidx.compose.material3.NavigationRail
 import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberDrawerState
+import androidx.compose.material3.windowsizeclass.WindowWidthSizeClass
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -40,7 +41,9 @@ import androidx.compose.ui.unit.dp
 import id.android.basics.compose.R
 
 @Composable
-fun ComposerApp(composerHomeUIState: ComposerHomeUIState) {
+fun ComposerApp(
+  composerHomeUIState: ComposerHomeUIState,
+  windowSize: WindowWidthSizeClass) {
   /* You will add navigation info here */
   ComposerNavigationWrapperUI(composerHomeUIState)
 }

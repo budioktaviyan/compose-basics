@@ -45,6 +45,7 @@ dependencies {
   implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.1")
   implementation("androidx.compose.ui:ui-tooling-preview:1.4.3")
   implementation("androidx.compose.material3:material3:1.1.1")
+  implementation("androidx.compose.material3:material3-window-size-class:1.1.1")
   implementation("androidx.compose.material:material-icons-extended:1.4.3")
   implementation("androidx.core:core-ktx:1.10.1")
   implementation("androidx.window:window:1.1.0")
