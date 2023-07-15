@@ -252,22 +252,6 @@ object LocalEmailsDataProvider {
   }
 
   /**
-   * Create a new [Email] that is a reply to the email with the given [replyToId]
-   */
-  fun createReplyTo(replyToId: Long): Email {
-    val replyTo = get(replyToId) ?: return create()
-    return Email(
-      id = System.nanoTime(),
-      sender = replyTo.recipients.firstOrNull() ?: LocalAccountsDataProvider.getDefaultUserAccount(),
-      recipients = listOf(replyTo.sender).plus(replyTo.recipients),
-      subject = replyTo.subject,
-      isStarred = replyTo.isStarred,
-      isImportant = replyTo.isImportant,
-      createAt = "Just now",
-    )
-  }
-
-  /**
    * Get a list of [Email] folders by which [Email]s can be categorized
    */
   fun getAllFolders() = listOf(
@@ -278,15 +262,4 @@ object LocalEmailsDataProvider {
     "Mortgage",
     "Grocery coupons"
   )
-
-  /**
-   * Create a new, blank [Email]
-   */
-  private fun create(): Email {
-    return Email(
-      System.nanoTime(), /* Unique ID generation */
-      LocalAccountsDataProvider.getDefaultUserAccount(),
-      createAt = "Just now",
-    )
-  }
 }

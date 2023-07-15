@@ -1,10 +1,9 @@
-@file:Suppress("UnstableApiUsage")
-
 plugins {
   id("com.android.application")
   kotlin("android")
 }
 
+@Suppress("UnstableApiUsage")
 android {
   namespace = "id.android.basics.compose"
   compileSdk = 33

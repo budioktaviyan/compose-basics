@@ -44,6 +44,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import id.android.basics.compose.R
+import id.android.basics.compose.ui.utils.ComposerContentType
 import id.android.basics.compose.ui.utils.ComposerNavigationType
 import id.android.basics.compose.ui.utils.DevicePosture
 import kotlinx.coroutines.launch
@@ -56,29 +57,45 @@ fun ComposerApp(
   /**
    * This will help us select type of navigation and content type depending on window size and fold state of the device
    */
-  val navigationType: ComposerNavigationType = when (windowSize) {
-    WindowWidthSizeClass.Compact -> ComposerNavigationType.BOTTOM_NAVIGATION
-    WindowWidthSizeClass.Medium -> ComposerNavigationType.NAVIGATION_RAIL
+  val navigationType: ComposerNavigationType
+  val contentType: ComposerContentType
+  when (windowSize) {
+    WindowWidthSizeClass.Compact -> {
+      navigationType = ComposerNavigationType.BOTTOM_NAVIGATION
+      contentType = ComposerContentType.LIST_ONLY
+    }
+    WindowWidthSizeClass.Medium -> {
+      navigationType = ComposerNavigationType.NAVIGATION_RAIL
+      contentType = if (foldingDevicePosture is DevicePosture.BookPosture || foldingDevicePosture is DevicePosture.Separating) {
+        ComposerContentType.LIST_AND_DETAIL
+      } else {
+        ComposerContentType.LIST_ONLY
+      }
+    }
     WindowWidthSizeClass.Expanded -> {
-      if (foldingDevicePosture is DevicePosture.BookPosture) {
+      navigationType = if (foldingDevicePosture is DevicePosture.BookPosture) {
         ComposerNavigationType.NAVIGATION_RAIL
       } else {
         ComposerNavigationType.PERMANENT_NAVIGATION_DRAWER
       }
+      contentType = ComposerContentType.LIST_AND_DETAIL
     }
-    else -> ComposerNavigationType.BOTTOM_NAVIGATION
+    else -> {
+      navigationType = ComposerNavigationType.BOTTOM_NAVIGATION
+      contentType = ComposerContentType.LIST_ONLY
+    }
   }
-  ComposerNavigationWrapperUI(navigationType, composerHomeUIState)
+  ComposerNavigationWrapperUI(navigationType, contentType, composerHomeUIState)
 }
 
 @Composable
 private fun ComposerNavigationWrapperUI(
   navigationType: ComposerNavigationType,
+  contentType: ComposerContentType,
   composerHomeUIState: ComposerHomeUIState) {
   val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
   val scope = rememberCoroutineScope()
   val selectedDestination = ComposerDestinations.INBOX
-
   if (navigationType == ComposerNavigationType.PERMANENT_NAVIGATION_DRAWER) {
     PermanentNavigationDrawer(
       drawerContent = {
@@ -86,7 +103,7 @@ private fun ComposerNavigationWrapperUI(
           NavigationDrawerContent(selectedDestination)
         }
       }
-    ) { ComposerAppContent(navigationType, composerHomeUIState) }
+    ) { ComposerAppContent(navigationType, contentType, composerHomeUIState) }
   } else {
     ModalNavigationDrawer(
       drawerContent = {
@@ -103,6 +120,7 @@ private fun ComposerNavigationWrapperUI(
     ) {
       ComposerAppContent(
         navigationType,
+        contentType,
         composerHomeUIState,
         onDrawerClicked = {
           scope.launch { drawerState.open() }
@@ -115,6 +133,7 @@ private fun ComposerNavigationWrapperUI(
 @Composable
 private fun ComposerAppContent(
   navigationType: ComposerNavigationType,
+  contentType: ComposerContentType,
   composerHomeUIState: ComposerHomeUIState,
   onDrawerClicked: () -> Unit = {}) {
   Row(modifier = Modifier.fillMaxSize()) {
@@ -125,10 +144,17 @@ private fun ComposerAppContent(
       .fillMaxSize()
       .background(MaterialTheme.colorScheme.inverseOnSurface)
     ) {
-      ComposerListOnlyContent(
-        composerHomeUIState = composerHomeUIState,
-        modifier = Modifier.weight(1f)
-      )
+      if (contentType == ComposerContentType.LIST_AND_DETAIL) {
+        ComposerListAndDetailContent(
+          composerHomeUIState = composerHomeUIState,
+          modifier = Modifier.weight(1f)
+        )
+      } else {
+        ComposerListOnlyContent(
+          composerHomeUIState = composerHomeUIState,
+          modifier = Modifier.weight(1f)
+        )
+      }
       AnimatedVisibility(visible = navigationType == ComposerNavigationType.BOTTOM_NAVIGATION) {
         ComposerBottomNavigationBar()
       }
@@ -206,7 +232,7 @@ private fun ComposerNavigationRail(onDrawerClicked: () -> Unit = {}) {
     )
     NavigationRailItem(
       selected = false,
-      onClick = {/* TODO */ },
+      onClick = { /* TODO */ },
       icon = {
         Icon(
           imageVector = Icons.Default.Article,
